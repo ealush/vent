@@ -1,6 +1,6 @@
 {
   "name": "vent-dom",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "jQuery inspired events library for the DOM",
   "main": "./lib/vent.min.js",
   "scripts": {
@@ -8,6 +8,14 @@
   },
   "author": "ealush",
   "license": "MIT",
+  "homepage": "https://github.com/ealush/vent#readme",
+  "bugs": {
+    "url": "https://github.com/ealush/vent/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ealush/vent.git"
+  },
   "devDependencies": {
     "jest": "^23.4.2"
   }
