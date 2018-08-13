@@ -1,7 +1,7 @@
 # Vent
 ![img logo](https://raw.githubusercontent.com/ealush/vent/master/assets/logo.png?raw=true)
 
-1.5Kb jQuery inspired events library for the browser.
+Extremely lightweight (1.5Kb) jQuery inspired events library for the browser.
 
 ```js
 vent('a:first-child').on('click', (e) => {
@@ -79,15 +79,16 @@ vent('a').once('click', () => {
 });
 ```
 
-* `.trigger(event, { data, options })`: Triggers an event. Accepts data and custom options. By default triggered events get `bubbles: true` (can be overridden with custom options).
+* `.trigger(event, { data, options })`: Triggers an event. Accepts data and custom options. By default triggered events get `bubbles: true` (can be overridden with custom options). Note: if the triggered event is a function on the element (such as `click`, `focus`, etc...), the function itself will be called instead of dispatching an event.
 
 Custom data will appear under `detail` property of the event.
 ```js
 // regular use
-vent('a').trigger('click');
+vent('a').trigger('click'); // will click the element
+vent('a').trigger('mouseenter'); // will dispatch `mouseenter` event.
 
 // with data
-vent('a').trigger('click', {data: 'custom data'});
+vent('a').trigger('click', {data: 'custom data'}); // will dispatch `click` with custom data (not call the function)
 
 vent('a').trigger('sample', {options: {bubbles: false}});
 ```
@@ -96,7 +97,9 @@ vent('a').trigger('sample', {options: {bubbles: false}});
 ```js
 const v = vent('a');
 v.add(window);
-v.add('li')
+v.add('li');
+
+v.on('scroll') // will be triggered for `a`, `window`, `li`.
 ```
 
 ---

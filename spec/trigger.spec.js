@@ -42,21 +42,51 @@ describe('Vent: trigger', () => {
             });
 
             describe('Without custom data', () => {
-                it('Should create a new Event instance', () => {
-                    vent('li')
-                        .forEach((node) => node.dispatchEvent = jest.fn)
-                        .trigger('click');
-                    expect(Event).toHaveBeenCalledTimes(vent('li').list.size);
+
+                describe('Triggered event is a function', () => {
+                    it('Should call triggered function', () => {
+                        const node = document.querySelector('a');
+                        const v = vent('a');
+
+                        [
+                            'focus',
+                            'click',
+                            'blur',
+                            'scroll'
+                        ].forEach((fnName) => {
+                            node[fnName] = jest.fn();
+                            v.trigger(fnName);
+                            expect(node[fnName]).toHaveBeenCalledTimes(1);
+                        });
+                    });
                 });
 
-                it('Should set event bubbling to `true`', () => {
-                    vent('li')
-                        .forEach((node) => node.dispatchEvent = jest.fn)
-                        .trigger('click');
+                describe('Triggered event is not a function', () => {
+                    it('Should create a new Event instance', () => {
+                        const eventsList = [
+                            'mouseenter',
+                            'mouseleave',
+                            'wheel',
+                            'drag',
+                            'toggle'
+                        ];
+                        eventsList.forEach((event) => {
+                            vent('li')
+                                .forEach((node) => node.dispatchEvent = jest.fn)
+                                .trigger(event);
+                            });
+                        expect(Event).toHaveBeenCalledTimes(vent('li').list.size * eventsList.length);
+                    });
 
-                    expect(Event.mock.calls[0]).toEqual([
-                        'click', { bubbles: true }
-                    ]);
+                    it('Should set event bubbling to `true`', () => {
+                        vent('li')
+                            .forEach((node) => node.dispatchEvent = jest.fn)
+                            .trigger('mouseenter');
+
+                        expect(Event.mock.calls[0]).toEqual([
+                            'mouseenter', { bubbles: true }
+                        ]);
+                    });
                 });
             });
 
@@ -83,21 +113,21 @@ describe('Vent: trigger', () => {
                 it('Should merge configuration with defaults', () => {
                     vent('a')
                         .forEach((node) => node.dispatchEvent = jest.fn)
-                        .trigger('click', { options: { bubbles: false } });
+                        .trigger('mouseenter', { options: { bubbles: false } });
                     expect(Event.mock.calls[0]).toEqual([
-                        'click', { bubbles: false }
+                        'mouseenter', { bubbles: false }
                     ]);
                 });
             });
         });
 
         describe('dispatchEvent', () => {
-            it('Should call dispatchEvent on elements', () => {
+            it('Should call dispatchEvent on elements for non-function events', () => {
                 const dispatchEvent = jest.fn();
                 vent('li')
                     .forEach((node) => node.dispatchEvent = dispatchEvent)
-                    .trigger('click');
-                expect(dispatchEvent).toHaveBeenCalledTimes(2);
+                    .trigger('mouseenter').trigger('mouseleave').trigger('focus').trigger('click');
+                expect(dispatchEvent).toHaveBeenCalledTimes(4);
             });
         });
     });
@@ -151,7 +181,7 @@ describe('Vent: trigger', () => {
                 const dispatchEvent = jest.fn();
                 vent('li')
                     .forEach((node) => node.dispatchEvent = dispatchEvent)
-                    .trigger('click');
+                    .trigger('sample');
                 expect(dispatchEvent).toHaveBeenCalledTimes(2);
             });
         });
