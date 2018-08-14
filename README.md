@@ -8,12 +8,35 @@ vent('a:first-child').on('click', (e) => {
     // do something
 });
 vent('a').add('button').off('click');
+
 vent(window).trigger('scroll');
 ```
 
 ## Installation
-You can either include vent's source as a script tag on your page, or
-```npm i --save vent-dom```
+You can either include vent's source as a script tag on your page, or:
+
+```
+npm i --save vent-dom
+```
+
+## Getting the $
+By default vent does not assign itself to `$`, in many cases you may already have jQuery on your page - sometimes simply because a 3rd party brought it in, and I don't want to cause any collisions. To use vent with `$`, simply add this to your code (after embedding vent, of course):
+
+```js
+window.$ = vent;
+
+$('button').trigger('click');
+```
+
+If you want to stay pretty safe and still use a shorthand, `v` works well too:
+
+```js
+window.v = vent;
+
+v(window).on('scroll', () => {
+    console.log('Weeeeeee!')
+});
+```
 
 ## Mission
 Even today, when jQuery is mostly unneeded due to the facts that most browsers are more or less standard compliant, jQuery’s api for dealing with DOM events is hands down the best.

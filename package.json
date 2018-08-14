@@ -1,6 +1,6 @@
 {
   "name": "vent-dom",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "jQuery inspired events library for the DOM",
   "main": "./lib/vent.min.js",
   "scripts": {
