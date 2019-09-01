@@ -53,7 +53,7 @@ Vent was written with jQuery in mind. It doesn’t support all of jQuery’s goo
 * Vent is not a DOM manipulation library.
 
 ## Making it work with ie11
-My personal recommendation is that you shouldn't support ie11 at all. If you are certain you want to do that, though - you should include `vent.min.es5.js` in your page, and also provide polyfills for Map and Set. https://polyfill.io/ is a good place to start.
+My personal recommendation is that you shouldn't support ie11 at all. If you are certain you want to do that, though - you should include `vent.min.es5.js` in your page, and also provide polyfills for Map, Set, and Array.prototype.includes. The recommendation is https://polyfill.io/ plus https://www.npmjs.com/package/polyfill-array-includes.
 
 ## Vent's API
 * `vent(selector)`: Most basic usage. Add elements to the set of elements.
