@@ -1,10 +1,11 @@
 {
   "name": "vent-dom",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "jQuery inspired events library for the DOM",
   "main": "./lib/vent.min.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "eslint": "eslint -c .eslintrc \"./lib/vent.js\"; exit 0"
   },
   "author": "ealush",
   "license": "MIT",
@@ -17,6 +18,8 @@
     "url": "git+https://github.com/ealush/vent.git"
   },
   "devDependencies": {
+    "eslint": "^6.7.1",
+    "eslint-plugin-jest": "^23.0.5",
     "jest": "^23.4.2"
   }
 }
