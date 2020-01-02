@@ -21,13 +21,13 @@ describe('Vent: constructor', () => {
 
         it('Should expose all as prototype methods', () => {
             ventMethods.forEach((methodName) => {
-                expect(vent().hasOwnProperty(methodName)).toBe(false);
+                expect(vent().hasOwnProperty(methodName)).toBe(false); // eslint-disable-line
             });
         });
 
-        it('Should have a Set named `list` property', () => {
-            expect(vent().hasOwnProperty('list')).toBe(true);
-            expect(vent().list instanceof Set).toBe(true);
+        it('Should have an array named `list`', () => {
+            expect(vent().hasOwnProperty('list')).toBe(true); // eslint-disable-line
+            expect(Array.isArray(vent().list)).toBe(true);
         });
     });
 

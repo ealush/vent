@@ -1,7 +1,7 @@
 require('../lib/vent.js');
 
 describe('Vent: trigger', () => {
-    let markup, rootElement;
+    let rootElement;
 
     beforeEach(() => {
         rootElement = document.createElement('div');
@@ -74,8 +74,8 @@ describe('Vent: trigger', () => {
                             vent('li')
                                 .forEach((node) => node.dispatchEvent = jest.fn)
                                 .trigger(event);
-                            });
-                        expect(Event).toHaveBeenCalledTimes(vent('li').list.size * eventsList.length);
+                        });
+                        expect(Event).toHaveBeenCalledTimes(vent('li').list.length * eventsList.length);
                     });
 
                     it('Should set event bubbling to `true`', () => {
@@ -95,7 +95,7 @@ describe('Vent: trigger', () => {
                     vent('li')
                         .forEach((node) => node.dispatchEvent = jest.fn)
                         .trigger('click', {data: { sample: 'data' }});
-                    expect(CustomEvent).toHaveBeenCalledTimes(vent('li').list.size);
+                    expect(CustomEvent).toHaveBeenCalledTimes(vent('li').list.length);
                 });
 
                 it('Should set event bubbling to `true` and `detail` to passed data', () => {
@@ -151,7 +151,7 @@ describe('Vent: trigger', () => {
                 vent('a')
                     .forEach((node) => node.dispatchEvent = jest.fn)
                     .trigger('sample');
-                expect(CustomEvent).toHaveBeenCalledTimes(vent('a').list.size);
+                expect(CustomEvent).toHaveBeenCalledTimes(vent('a').list.length);
             });
 
             it('Should set event bubbling to `true` and `detail` to passed data', () => {

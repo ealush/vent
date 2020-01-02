@@ -1,7 +1,7 @@
 require('../lib/vent.js');
 
 describe('Vent: add', () => {
-    let markup, rootElement;
+    let rootElement;
 
     beforeEach(() => {
         rootElement = document.createElement('div');
@@ -22,7 +22,7 @@ describe('Vent: add', () => {
     });
 
     it('Should return current instance', () => {
-        expect(vent().add('.some-class').constructor.name).toBe('Vent')
+        expect(vent().add('.some-class').constructor.name).toBe('Vent');
     });
 
     describe('Selector matching', () => {
@@ -36,7 +36,7 @@ describe('Vent: add', () => {
                 null
             ].forEach((selector) => {
                 let element = document.querySelector(selector);
-                expect(vent().add(selector).list.has(element)).toBe(!!element ? true : false)
+                expect(vent().add(selector).list.some((v) => v === element)).toBe(element ? true : false);
             });
         });
 
@@ -47,13 +47,13 @@ describe('Vent: add', () => {
                 document.body,
                 new Object()
             ].forEach((obj) => {
-                expect(vent().add(obj).list.has(obj)).toBe(typeof obj.addEventListener === 'function');
+                expect(vent().add(obj).list.some((v) => v === obj)).toBe(typeof obj.addEventListener === 'function');
             });
         });
 
         it('Should accept nodelist', () => {
             document.querySelectorAll('li').forEach((node) => {
-                expect(vent().add(node).list.has(node)).toBe(true);
+                expect(vent().add(node).list.some((v) => v === node)).toBe(true);
             });
         });
     });
@@ -63,18 +63,18 @@ describe('Vent: add', () => {
         it('Should allow adding to an existing list', () => {
             const v = vent('a');
             v.add('li');
-            expect(v.list.size).toBe(3);
-            expect(v.list.has(document.querySelector('a'))).toBe(true);
+            expect(v.list.length).toBe(3);
+            expect(v.list.some((v) => v === document.querySelector('a'))).toBe(true);
             document.querySelectorAll('li').forEach((node) => {
-                expect(v.list.has(node)).toBe(true);
+                expect(v.list.some((v) => v === node)).toBe(true);
             });
         });
 
         it('Should only add new items. No duplicates', () => {
             const v = vent('a');
-            expect(v.list.size).toBe(1);
+            expect(v.list.length).toBe(1);
             v.add('a');
-            expect(v.list.size).toBe(1);
+            expect(v.list.length).toBe(1);
         });
     });
 
