@@ -1,70 +1,101 @@
-require('../lib/vent.js');
+require('../lib/vent.min.js');
+const faker = require("faker");
 
-describe('Vent: on', () => {
-    let markup, rootElement;
+const selectors = [".some-class", "#some-list", "li:nth-child(2)"];
 
-    beforeEach(() => {
-        rootElement = document.createElement('div');
-        rootElement.innerHTML = `
-            <div class="some-class">
-                <ul id="some-list">
-                    <li>item:1</li>
-                    <li>item:2</li>
-                </ul>
-                <a href="#!">click me!</a>
-            </div>
+describe("vent.on", () => {
+  let rootElement, v, handler, element;
+
+  beforeEach(() => {
+    rootElement = document.createElement("div");
+    rootElement.innerHTML = `
+        <div class="some-class">
+            <ul id="some-list">
+                <li class="child1"><span>item 1</span></li>
+                <li class="child2"><span>item 2</span></li>
+            </ul>
+            <a href="#!">click me!</a>
+        </div>
         `;
-        document.body.appendChild(rootElement);
+    document.body.appendChild(rootElement);
+    handler = jest.fn();
+  });
+
+  afterEach(() => {
+    rootElement.remove();
+  });
+
+  it("Should return current instance", () => {
+    const v = vent("li");
+    expect(v.on("click", jest.fn)).toBe(v);
+  });
+
+  describe("call addEventListener", () => {
+    it("Should call addEventListener on every matched selector", () => {
+      const eventName = faker.random.word();
+      const nodes = vent("li");
+      nodes.each(node => (node.addEventListener = jest.fn()));
+      vent("li").on(eventName, jest.fn());
+      nodes.each(node => {
+        expect(node.addEventListener).toHaveBeenCalledWith(
+          eventName,
+          expect.any(Function)
+        );
+        node.addEventListener.mockRestore();
+      });
     });
 
-    afterEach(() => {
-        rootElement.remove();
-    });
+    it("Should call passed handler each time the event is fired", () => {
+      v = vent("li").on("click", handler);
 
-    it('Should return current instance', () => {
-        const v = vent('li');
-        expect(v.on('click', jest.fn())).toBe(v);
+      v.each(e => e.click());
+      expect(handler).toHaveBeenCalledTimes(2);
     });
+  });
 
-    describe('call addEventListener', () => {
-        it('Should call addEventListener on every matched selector', () => {
-            const nodes = vent('li');
-            nodes.forEach((node) => node.addEventListener = jest.fn());
-            vent('li').on('click', jest.fn());
-            nodes.forEach((node) => {
-                expect(node.addEventListener).toHaveBeenCalled();
-                node.addEventListener.mockRestore();
-            });
+  describe("Multiple events", () => {
+    it("Should accept space delimited events", () => {
+      vent("a")
+        .on("click focus", handler)
+        .each(e => {
+          e.click();
+          e.focus();
         });
-
-        it('Should call passed handler each time the event is fired', () => {
-            const handler = jest.fn();
-            vent('li').on('click', handler).trigger('click');
-            expect(handler).toHaveBeenCalledTimes(2);
-        });
+      expect(handler).toHaveBeenCalledTimes(2);
     });
 
-    describe('Multiple events', () => {
-        it('Should accept space delimited events', () => {
-            let handler = jest.fn();
-            vent('a').on('click mouseenter', handler).trigger('click mouseenter');
-            expect(handler).toHaveBeenCalledTimes(2);
+    it("Should prevent duplication when registering events", () => {
+      vent("a")
+        .on("click click focus", handler)
+        .each(e => {
+          e.click();
+          e.focus();
         });
+      expect(handler).toHaveBeenCalledTimes(2);
+    });
+  });
 
-        it('Should prevent duplication when registering events', () => {
-            let handler = jest.fn();
-            vent('a').on('click click', handler).trigger('click click');
-            expect(handler).toHaveBeenCalledTimes(1);
+  describe("Event delegation", () => {
+    it("Should allow delegation via second argument", () => {
+      vent("ul").on("click", "li:first-child", handler);
+      vent("li")
+        .add("ul")
+        .each(e => {
+          e.click();
         });
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler.mock.calls[0][0].target).toBe(
+        document.querySelector("li:first-child")
+      );
     });
 
-    describe('Event delegation', () => {
-        it('Should allow delegation via second argument', () => {
-            const handler = jest.fn();
-            vent('ul').on('click', 'li:first-child', handler);
-            vent('li').add('ul').trigger('click');
-            expect(handler).toHaveBeenCalledTimes(1);
-            expect(handler.mock.calls[0][0].target).toBe(document.querySelector('li:first-child'));
-        });
+    it("Should apply for a nested child element", () => {
+      element = document.querySelector("li:first-child span");
+      vent("ul").on("click", "li:first-child", handler);
+      vent("li span").add("ul");
+      element.click();
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler.mock.calls[0][0].target).toBe(element);
     });
+  });
 });

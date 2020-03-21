@@ -49,11 +49,8 @@ Vent was written with jQuery in mind. It doesn’t support all of jQuery’s goo
 
 ## What Vent isn't?
 * Vent is **NOT** jQuery. It is not a 100% jQuery compliant, but it does cover 95% of the use-cases handled by jQuery.
-* Vent is not backwards compatible. It works across all modern browsers (Chrome, FF, Safari, Edge..), but requires polyfills to work on ie11. If for some reason you want your stuff to work on ie8, please, use jQuery.
+* Vent is not backwards compatible. It works across all evergreen browsers (Chrome, FF, Safari, Edge..). If for some reason you want your stuff to work on ie10 and below, please, use jQuery.
 * Vent is not a DOM manipulation library.
-
-## Making it work with ie11
-My personal recommendation is that you shouldn't support ie11 at all. If you are certain you want to do that, though - you should include `vent.min.es5.js` in your page, and also provide polyfills for Map, Set, and Array.prototype.includes. The recommendation is https://polyfill.io/ plus https://www.npmjs.com/package/polyfill-array-includes.
 
 ## Vent's API
 * `vent(selector)`: Most basic usage. Add elements to the set of elements.
@@ -89,10 +86,12 @@ vent('li').on('sample-event', (e) => {
 ```
 
 * `.off(events)`: Unregisters events handlers bound using `.on`. When no events passed
+* `.off(events, handler)`: Unregisters events handlers bound using `.on`. When no events passed
 ```js
 vent('a').off('click'); // unregisters all click events bound using 'on()'
 vent('a').off('click mouseenter'); // unregisters all click and mouseenter events bound using 'on()'
 vent('a').off(); // unregisters all events bound using 'on()'
+vent('a').off('click', myHandler); // unregisters all events that were created with a specific handler function.
 ```
 
 * `.once(events, delegatedTarget, handler)`: exactly like `.on`, but gets triggered only once. Does not respect `.off`!
@@ -102,7 +101,8 @@ vent('a').once('click', () => {
 });
 ```
 
-* `.trigger(event, { data, options })`: Triggers an event. Accepts data and custom options. By default triggered events get `bubbles: true` (can be overridden with custom options). Note: if the triggered event is a function on the element (such as `click`, `focus`, etc...), the function itself will be called instead of dispatching an event.
+* `.trigger(event, { data, options })`: Triggers an event. Accepts data and custom options. By default triggered events get `bubbles: true` (can be overridden with custom options).
+Note: if the triggered event is a function on the element (such as `click`, `focus`, etc...), the function itself will be called along with dispatching an event.
 
 Custom data will appear under `detail` property of the event.
 ```js
