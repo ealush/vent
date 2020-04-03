@@ -18,6 +18,25 @@ You can either include vent's source as a script tag on your page, or:
 ```
 npm i --save vent-dom
 ```
+Or:
+
+```
+<script src="http://cdn.jsdelivr.net/npm/vent-dom@0.1.2/lib/vent.min.js"></script>
+```
+
+## A note on ES5 support
+This library by default does not support ES5 syntax, but it does produce an es5 bundle for those who still need es5 support.
+To use it, either require, or use itas a script tag.
+
+```
+<script src="http://cdn.jsdelivr.net/npm/vent-dom@0.1.2/lib/vent.min.es5.js"></script>
+```
+
+Or:
+
+```
+require('vent-dom/lib/vent.min.es5.js');
+```
 
 ## Getting the $
 By default vent does not assign itself to `$`, in many cases you may already have jQuery on your page - sometimes simply because a 3rd party brought it in, and I don't want to cause any collisions. To use vent with `$`, simply add this to your code (after embedding vent, of course):

@@ -1,17 +1,24 @@
-import compiler from '@ampproject/rollup-plugin-closure-compiler';
+import { terser } from 'rollup-plugin-terser';
+import compiler from "@ampproject/rollup-plugin-closure-compiler";
 
-export default {
-    input: 'lib/vent.js',
-    output: [{
-      file: 'lib/vent.min.js',
-      format: 'iife',
-    }, {
-      file: 'lib/vent.min.es5.js',
-      format: 'iife',
-    }, ],
-    plugins: [
-      compiler({
-        compilation_level: 'ADVANCED_OPTIMIZATIONS'
+const build = ({ lang = "" } = {}) => ({
+  input: "lib/vent.js",
+  output: [
+    {
+      file: ["lib/vent.min", lang, "js"].filter(Boolean).join("."),
+      format: "iife",
+    },
+  ],
+  plugins: [
+    compiler({
+      compilation_level: "ADVANCED_OPTIMIZATIONS",
+      ...(lang === "es5" && {
+        rewrite_polyfills: true,
+        language_out: "ECMASCRIPT5",
       }),
-    ],
-  }
+    }),
+    terser(),
+  ],
+});
+
+export default [build(), build({ lang: "es5" })];
